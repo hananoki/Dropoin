@@ -51,14 +51,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\ArrayUtility.cs" />
-    <Compile Include="Common\BoolToEnumConverter.cs" />
-    <Compile Include="Common\CueSheet.cs" />
-    <Compile Include="Common\Helper.cs" />
-    <Compile Include="Common\mp3infp.cs" />
-    <Compile Include="Common\RelayCommand.cs" />
-    <Compile Include="Common\StringExtensions.cs" />
-    <Compile Include="Common\Win32.cs" />
+    <Compile Include="csclilib\ArrayUtility.cs" />
+    <Compile Include="csclilib\BoolToEnumConverter.cs" />
+    <Compile Include="csclilib\CueSheet.cs" />
+    <Compile Include="csclilib\Helper.cs" />
+    <Compile Include="csclilib\mp3infp.cs" />
+    <Compile Include="csclilib\RelayCommand.cs" />
+    <Compile Include="csclilib\StringExtensions.cs" />
+    <Compile Include="csclilib\Win32.cs" />
     <Compile Include="Source\DropCommand_Settings.cs" />
     <Compile Include="Source\MainFrame.cs">
       <SubType>Form</SubType>
