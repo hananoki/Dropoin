@@ -241,8 +241,9 @@ namespace Dropoin {
 
 			rt.setEnv( "PATH", "", EnvironmentVariableTarget.Process );
 			var paths = m_envList.
-				Where( x => !string.IsNullOrEmpty( x ) ).
-				Select( x => Path.GetDirectoryName( x ) ).ToArray();
+				Where( x => !string.IsNullOrEmpty( x ) )
+				//.Select( x => Path.GetDirectoryName( x ) )
+				.ToArray();
 
 			Helper.SetEnvironmentPath( string.Join( ";", paths ) );
 
