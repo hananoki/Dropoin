@@ -32,12 +32,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Internal.ico</ApplicationIcon>
+    <ApplicationIcon>load-download_114474.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LitJSON, Version=0.13.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\LitJson.0.13.0\lib\net45\LitJSON.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\LitJson.0.13.0\lib\net45\LitJSON.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -51,25 +50,37 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="csclilib\ArrayUtility.cs" />
-    <Compile Include="csclilib\BoolToEnumConverter.cs" />
-    <Compile Include="csclilib\CueSheet.cs" />
-    <Compile Include="csclilib\Helper.cs" />
-    <Compile Include="csclilib\mp3infp.cs" />
-    <Compile Include="csclilib\RelayCommand.cs" />
-    <Compile Include="csclilib\StringExtensions.cs" />
-    <Compile Include="csclilib\Win32.cs" />
-    <Compile Include="Source\DropCommand_Settings.cs" />
-    <Compile Include="Source\MainFrame.cs">
+    <Compile Include="CsLib\ArrayUtility.cs" />
+    <Compile Include="CsLib\BoolToEnumConverter.cs" />
+    <Compile Include="CsLib\CueSheet.cs" />
+    <Compile Include="CsLib\Debug.cs" />
+    <Compile Include="CsLib\Helper.cs" />
+    <Compile Include="CsLib\JsonUtils.cs" />
+    <Compile Include="CsLib\Log.cs" />
+    <Compile Include="CsLib\LogWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Source\MainFrame.Designer.cs">
-      <DependentUpon>MainFrame.cs</DependentUpon>
+    <Compile Include="CsLib\LogWindow.Designer.cs">
+      <DependentUpon>LogWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Source\Program.cs" />
+    <Compile Include="CsLib\mp3infp.cs" />
+    <Compile Include="CsLib\RelayCommand.cs" />
+    <Compile Include="CsLib\StringExtensions.cs" />
+    <Compile Include="CsLib\Win32.cs" />
+    <Compile Include="Main\Config.cs" />
+    <Compile Include="Main\MainWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main\MainWindow.Designer.cs">
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Main\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Source\MainFrame.resx">
-      <DependentUpon>MainFrame.cs</DependentUpon>
+    <EmbeddedResource Include="CsLib\LogWindow.resx">
+      <DependentUpon>LogWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Main\MainWindow.resx">
+      <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -96,11 +107,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\arrow-icon295.png" />
-    <None Include="Resources\ajax-loader.gif" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Internal.ico" />
+    <Content Include="load-download_114474.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

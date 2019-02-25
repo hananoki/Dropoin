@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CsLib;
 
 namespace Dropoin
 {
@@ -34,16 +35,17 @@ namespace Dropoin
 		[STAThread]
 		static void Main()
 		{
-			using( var mutex = new System.Threading.Mutex( false, typeof( MainFrame ).ToString() ) ) {
+			using( var mutex = new System.Threading.Mutex( false, typeof( MainWindow ).ToString() ) ) {
 				if( mutex.WaitOne( 0, false ) == false ) {
 					//すでに起動していると判断して終了
-					MessageBox.Show( "多重起動はできません。", typeof( MainFrame ).ToString() );
+					MessageBox.Show( "多重起動はできません。", typeof( MainWindow ).ToString() );
 					return;
 				}
 
 				Application.EnableVisualStyles();
 				Application.SetCompatibleTextRenderingDefault( false );
-				Application.Run( new MainFrame() );
+				Helper._init();
+				Application.Run( new MainWindow() );
 			}
 		}
 	}

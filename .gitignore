@@ -1,7 +1,6 @@
 /.vs
-/MediaConv/bin
-/MediaConv/obj
-/build
-/Bak
-/bin
-/obj
+/packages
+/Project/bin
+/Project/obj
+/Build
+/backup

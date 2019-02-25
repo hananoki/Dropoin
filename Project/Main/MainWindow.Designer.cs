@@ -1,5 +1,5 @@
 ﻿namespace Dropoin {
-	partial class MainFrame {
+	partial class MainWindow {
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -24,11 +24,13 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.label2 = new System.Windows.Forms.Label();
 			this.m_picReady = new System.Windows.Forms.PictureBox();
 			this.m_pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.ログToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.contextMenuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.m_picReady)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.m_pictureBox1)).BeginInit();
@@ -37,14 +39,15 @@
 			// contextMenuStrip1
 			// 
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ログToolStripMenuItem,
             this.toolStripMenuItem1});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(113, 26);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(113, 48);
 			// 
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(112, 22);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
 			this.toolStripMenuItem1.Text = "終了(&E)";
 			this.toolStripMenuItem1.Click += new System.EventHandler(this.OnMenuExit);
 			// 
@@ -55,7 +58,7 @@
 			this.label2.Location = new System.Drawing.Point(0, 71);
 			this.label2.Margin = new System.Windows.Forms.Padding(0);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(109, 19);
+			this.label2.Size = new System.Drawing.Size(109, 26);
 			this.label2.TabIndex = 2;
 			this.label2.Text = "label2";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -63,9 +66,9 @@
 			// 
 			// m_picReady
 			// 
-			this.m_picReady.Image = global::Dropoin.Properties.Resources.arrow_icon295;
+			this.m_picReady.Image = ((System.Drawing.Image)(resources.GetObject("m_picReady.Image")));
 			this.m_picReady.InitialImage = null;
-			this.m_picReady.Location = new System.Drawing.Point(32, 4);
+			this.m_picReady.Location = new System.Drawing.Point(32, 12);
 			this.m_picReady.Name = "m_picReady";
 			this.m_picReady.Size = new System.Drawing.Size(44, 60);
 			this.m_picReady.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -76,26 +79,35 @@
 			// 
 			// m_pictureBox1
 			// 
-			this.m_pictureBox1.Image = global::Dropoin.Properties.Resources.ajax_loader;
-			this.m_pictureBox1.Location = new System.Drawing.Point(21, 0);
+			this.m_pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("m_pictureBox1.Image")));
+			this.m_pictureBox1.Location = new System.Drawing.Point(22, 11);
 			this.m_pictureBox1.Name = "m_pictureBox1";
 			this.m_pictureBox1.Size = new System.Drawing.Size(64, 64);
 			this.m_pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
 			this.m_pictureBox1.TabIndex = 4;
 			this.m_pictureBox1.TabStop = false;
 			// 
-			// MainFrame
+			// ログToolStripMenuItem
+			// 
+			this.ログToolStripMenuItem.Name = "ログToolStripMenuItem";
+			this.ログToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+			this.ログToolStripMenuItem.Text = "ログ";
+			this.ログToolStripMenuItem.Click += new System.EventHandler(this.ログToolStripMenuItem_Click);
+			// 
+			// MainWindow
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.ClientSize = new System.Drawing.Size(109, 90);
+			this.ClientSize = new System.Drawing.Size(109, 97);
 			this.ContextMenuStrip = this.contextMenuStrip1;
 			this.ControlBox = false;
 			this.Controls.Add(this.m_picReady);
 			this.Controls.Add(this.m_pictureBox1);
 			this.Controls.Add(this.label2);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-			this.Name = "MainFrame";
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.Name = "MainWindow";
+			this.ShowIcon = false;
+			this.ShowInTaskbar = false;
 			this.Text = "ファイルをドロップ";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
 			this.Load += new System.EventHandler(this.Form1_Load);
@@ -117,5 +129,6 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.PictureBox m_picReady;
 		private System.Windows.Forms.PictureBox m_pictureBox1;
+		private System.Windows.Forms.ToolStripMenuItem ログToolStripMenuItem;
 	}
 }

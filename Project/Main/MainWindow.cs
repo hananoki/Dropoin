@@ -1,91 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-//using System.Diagnostics;
-using System.Reflection;
-using System.Linq;
-
-using AppCommon;
-
-
+using CsLib;
 
 namespace Dropoin {
-	public partial class MainFrame : Form {
-		
-		[Flags]
-		public enum PlaySoundFlags : int {
-			SND_SYNC = 0x0000,
-			SND_ASYNC = 0x0001,
-			SND_NODEFAULT = 0x0002,
-			SND_MEMORY = 0x0004,
-			SND_LOOP = 0x0008,
-			SND_NOSTOP = 0x0010,
-			SND_NOWAIT = 0x00002000,
-			SND_ALIAS = 0x00010000,
-			SND_ALIAS_ID = 0x00110000,
-			SND_FILENAME = 0x00020000,
-			SND_RESOURCE = 0x00040004,
-			SND_PURGE = 0x0040,
-			SND_APPLICATION = 0x0080
-		}
-		[System.Runtime.InteropServices.DllImport( "winmm.dll", CharSet = System.Runtime.InteropServices.CharSet.Auto )]
-		private static extern bool PlaySound( string pszSound, IntPtr hmod, PlaySoundFlags fdwSound );
-
-
-
-		internal enum AccentState {
-			ACCENT_DISABLED = 0,
-			ACCENT_ENABLE_GRADIENT = 1,
-			ACCENT_ENABLE_TRANSPARENTGRADIENT = 2,
-			ACCENT_ENABLE_BLURBEHIND = 3,
-			ACCENT_INVALID_STATE = 4
-		}
-
-		[StructLayout( LayoutKind.Sequential )]
-		internal struct AccentPolicy {
-			public AccentState AccentState;
-			public int AccentFlags;
-			public int GradientColor;
-			public int AnimationId;
-		}
+	public partial class MainWindow : Form {
+	
 		//マウスのクリック位置を記憶
 		private Point m_mousePoint;
 
 		string  m_msgDropEntry = "ファイルをドロップ";
 		string  m_msgDropProcess = "処理を実行中";
 
-		string m_appName;
-		string  m_appPath;
-
 		bool dontSetting=false;
 
-		public string CONFIG_PATH {
-			get { return $"{m_appPath}\\{m_appName}.json"; }
-		}
-		//string m_settingInit;
+		static Config m_settingInstance;
 
-		static Setting m_settingInstance;
-
-		Setting m_setting {
+		Config m_config {
 			get {
 				if( m_settingInstance == null ) {
-					if( File.Exists( CONFIG_PATH ) ) {
-						using( var st = new StreamReader( CONFIG_PATH ) ) {
-							var ss = st.ReadToEnd();
-							if( !string.IsNullOrEmpty( ss ) ) {
-								var s = LitJson.JsonMapper.ToObject<Setting>( ss );
-								m_settingInstance = s;
-								Debug.Log( $"Setting: {CONFIG_PATH}から読み込みました。" );
-							}
-						}
-					}
+					Helper.ReadJson( ref m_settingInstance, Helper.m_configPath );
 				}
 				if( m_settingInstance == null ) {
-					m_settingInstance = new Setting();
+					m_settingInstance = new Config();
 					Debug.Log( "Setting: 新規作成します" );
 				}
 				return m_settingInstance;
@@ -97,22 +38,22 @@ namespace Dropoin {
 
 
 		int m_listindex {
-			get { return m_setting.list_idx; }
-			set { m_setting.list_idx = value; }
+			get { return m_config.list_idx; }
+			set { m_config.list_idx = value; }
 		}
 
 		CommandInfo m_currentCommand {
-			get { return m_setting.m_cmdList[ m_listindex ]; }
+			get { return m_config.m_cmdList[ m_listindex ]; }
 		}
 		List<CommandInfo> m_commandList {
-			get { return m_setting.m_cmdList; }
+			get { return m_config.m_cmdList; }
 		}
 		List<string> m_envList {
-			get { return m_setting.envList; }
+			get { return m_config.envList; }
 		}
 
 
-		public MainFrame() {
+		public MainWindow() {
 			InitializeComponent();
 
 			//BackColor = Color.Black;
@@ -128,22 +69,7 @@ namespace Dropoin {
 			}
 
 			//ホイールイベントの追加
-			this.MouseWheel += new System.Windows.Forms.MouseEventHandler( this.Form1_MouseWheel );
-
-			//AccentPolicy policy;
-			//policy.AccentState = AccentState.ACCENT_ENABLE_BLURBEHIND;
-			//policy.AccentFlags = 0;
-			//policy.GradientColor= 0;
-			//policy.AnimationId = 0;
-			//WindowCompositionAttributeData data;
-			//data.Attribute=WindowCompositionAttribute.WCA_ACCENT_POLICY;
-			//IntPtr sysTimePtr = Marshal.AllocCoTaskMem( Marshal.SizeOf( policy ) );
-			//Marshal.StructureToPtr( policy, sysTimePtr, false );
-			//data.Data = sysTimePtr;
-			//data.SizeOfData = Marshal.SizeOf( policy );
-			//SetWindowCompositionAttribute( this.Handle, ref data );
-			////タスクバーに表示しない
-			//ShowInTaskbar = false;
+			this.MouseWheel += new MouseEventHandler( this.Form1_MouseWheel );
 		}
 
 
@@ -155,91 +81,16 @@ namespace Dropoin {
 		private void Form1_Load( object sender, EventArgs e ) {
 			Font = SystemFonts.IconTitleFont;
 
-			var location = Assembly.GetExecutingAssembly().Location;
-			m_appName = location.GetBaseName();
-
-			var exePath = Directory.GetParent( location );
-			m_appPath = exePath.FullName;
-			Debug.Log( $"{m_appPath} : {m_appName}" );
-
-			m_appPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-			m_appPath = Path.GetDirectoryName( m_appPath );
-
-#if DEBUG
-			Win32.AllocConsole();
-#endif
-
-			//if( Debugger.IsAttached ) {
-			//	m_appPath = Directory.GetCurrentDirectory();
-			//}
-
-
 			m_pictureBox1.Visible = false;
 			m_picReady.Visible = true;
 
-			//
+			m_config.RollbackWindow( this );
 
-			//if( File.Exists( configPath ) ) {
-			//	try {
-			//		using( var st = new StreamReader( configPath ) ) {
-			//			m_settingInit = st.ReadToEnd();
-			//			m_setting = LitJson.JsonMapper.ToObject<Setting>( m_settingInit );
-						
-			//			//throw new Exception("err");
-			//			foreach( var c in m_commandList ) {
-			//				console.log( "{0}: {1} {2}".format( c.cmdName, c.cmdExe, c.cmdArg ) );
-			//			}
-			//		}
-			//	}
-			//	catch( Exception ee ) {
-			//		console.log( ee.ToString() );
-			//		m_setting = null;
-			//		m_settingInit = null;
-			//	}
-			//}
-
-			//ディスプレイの高さ
-			int disph = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
-			//ディスプレイの幅
-			int dispw = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
-			while( dispw <= m_setting.posx ) {
-				m_setting.posx -= dispw;
-			}
-			if( m_setting.posx <= 0 ) {
-				m_setting.posx = 120;
-			}
-			while( disph <= m_setting.posy ) {
-				m_setting.posy -= disph;
-			}
-			if( m_setting.posy <= 0 ) {
-				m_setting.posy = 120;
-			}
-
-			this.Location = new Point( m_setting.posx, m_setting.posy );
 			if( m_envList.Count == 0 ) {
 				m_envList.Add( "" );
 				m_envList.Add( "" );
 			}
 
-
-			//if( m_setting == null ) {
-			//	var result = MessageBox.Show( "設定ファイルがありませんでした。\n\n> 新規作成しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question );
-			//	if( result == DialogResult.Yes ) {
-			//		m_setting = new Setting();
-			//		m_setting.posx = this.Location.X;
-			//		m_setting.posy = this.Location.Y;
-			//		m_setting.m_cmdList.Add( new CommandInfo( "", "", "" ) );
-			//		m_envList.Add( "" );
-			//		m_envList.Add( "" );
-			//	}
-			//	else {
-			//		dontSetting = true;
-			//		label2.Text = "使用できません";
-			//		label2.ForeColor = Color.Red;
-			//	}
-			//}
-
-			rt.setEnv( "PATH", "", EnvironmentVariableTarget.Process );
 			var paths = m_envList.
 				Where( x => !string.IsNullOrEmpty( x ) )
 				//.Select( x => Path.GetDirectoryName( x ) )
@@ -259,17 +110,8 @@ namespace Dropoin {
 		private void Form1_FormClosing( object sender, FormClosingEventArgs e ) {
 			if( dontSetting ) return;
 
-			try {
-				using( StreamWriter writer = new StreamWriter( CONFIG_PATH ) ) {
-					m_setting.posx = this.Location.X;
-					m_setting.posy = this.Location.Y;
-					string json = JsonUtils.ToJson( m_setting );
-					writer.Write( json );
-				}
-			}
-			catch( Exception ee ) {
-				Debug.Log( ee.ToString() );
-			}
+			m_config.BackupWindow( this );
+			Helper.WriteJson( m_config , Helper.m_configPath);
 		}
 
 
@@ -279,10 +121,11 @@ namespace Dropoin {
 			Text = m_msgDropProcess;
 			m_pictureBox1.Visible = true;
 			m_picReady.Visible = false;
-			if( m_setting.se_start != null ) {
-				PlaySound( m_setting.se_start, IntPtr.Zero, PlaySoundFlags.SND_FILENAME | PlaySoundFlags.SND_ASYNC );
+			if( m_config.se_start != null ) {
+				Win32.PlaySound( m_config.se_start, IntPtr.Zero, Win32.PlaySoundFlags.SND_FILENAME | Win32.PlaySoundFlags.SND_ASYNC );
 			}
 		}
+
 
 		void unlockDragDrop() {
 			Debug.Log( "unlockDragDrop" );
@@ -290,8 +133,8 @@ namespace Dropoin {
 			m_pictureBox1.Visible = false;
 			Text = m_msgDropEntry;
 
-			if( m_setting.se_finish != null ) {
-				PlaySound( m_setting.se_finish, IntPtr.Zero, PlaySoundFlags.SND_FILENAME | PlaySoundFlags.SND_ASYNC );
+			if( m_config.se_finish != null ) {
+				Win32.PlaySound( m_config.se_finish, IntPtr.Zero, Win32.PlaySoundFlags.SND_FILENAME | Win32.PlaySoundFlags.SND_ASYNC );
 			}
 		}
 
@@ -348,8 +191,8 @@ namespace Dropoin {
 				}
 			}
 			ShowScriptLabel();
-			if( m_setting.se_select != null ) {
-				PlaySound( m_setting.se_select, IntPtr.Zero, PlaySoundFlags.SND_FILENAME | PlaySoundFlags.SND_ASYNC );
+			if( m_config.se_select != null ) {
+				Win32.PlaySound( m_config.se_select, IntPtr.Zero, Win32.PlaySoundFlags.SND_FILENAME | Win32.PlaySoundFlags.SND_ASYNC );
 			}
 		}
 
@@ -451,6 +294,8 @@ namespace Dropoin {
 			}
 		}
 
-		
+		private void ログToolStripMenuItem_Click( object sender, EventArgs e ) {
+			LogWindow.Visible = true;
+		}
 	}
 }
